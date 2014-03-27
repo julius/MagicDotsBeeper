@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>Magic Dots Beeper</title>
+</head>
+<body>
+	<div id="time"></div>
+	<div id="dots"></div>
+
+	<script type="text/javascript">
+	var MINUTES_FOR_DOT = 6;
+
+	var beep = (function () {
+	    var ctx = new(window.audioContext || window.webkitAudioContext);
+	    return function (duration, type, finishedCallback) {
+
+	        duration = +duration;
+
+	        // Only 0-4 are valid types.
+	        type = (type % 5) || 0;
+
+	        if (typeof finishedCallback != "function") {
+	            finishedCallback = function () {};
+	        }
+
+	        var osc = ctx.createOscillator();
+
+	        osc.type = type;
+
+	        osc.connect(ctx.destination);
+	        osc.noteOn(0);
+
+	        setTimeout(function () {
+	            osc.noteOff(0);
+	            finishedCallback();
+	        }, duration);
+
+	    };
+	})();
+
+	function zeroPad(num, places) {
+	  var zero = places - num.toString().length + 1;
+	  return Array(+(zero > 0 && zero)).join("0") + num;
+	}
+
+	var dateStart = new Date();
+	var dateLastBeep = dateStart;
+	setInterval(function () {
+		var dateNow = new Date();
+		var seconds = Math.round((dateNow - dateStart)/1000);
+		var minutes = Math.floor(seconds / 60);
+		var seconds2 = seconds - (minutes * 60);
+
+		document.getElementById("time").innerHTML = zeroPad(minutes, 2) + " : " + zeroPad(seconds2, 2);
+		document.getElementById("dots").innerHTML = "&raquo; " + Math.floor(minutes / MINUTES_FOR_DOT) + " dots";
+
+		var beepSeconds = Math.round((dateNow - dateLastBeep)/1000);
+		var beepMinutes = Math.floor(beepSeconds / 60);
+		if (beepMinutes >= MINUTES_FOR_DOT) {
+			dateLastBeep = dateNow;
+			beep(200, 3);
+		}
+	}, 1000);
+	</script>
+
+	<style type="text/css">
+		#time {
+			font: bold 100px/100px Helvetica, "Helvetica Neue", Arial, sans-serif;
+			text-align: center;
+			color: #444;
+			padding: 40px 0 0 0;
+		}
+		#dots {
+			font: bold 50px/100px Helvetica, "Helvetica Neue", Arial, sans-serif;
+			text-align: center;
+			color: #666;
+		}
+	</style>
+</body>
+</html>
