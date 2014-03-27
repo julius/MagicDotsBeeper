@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Magic Dots Beeper</title>
@@ -51,7 +52,7 @@
 		var seconds2 = seconds - (minutes * 60);
 
 		document.getElementById("time").innerHTML = zeroPad(minutes, 2) + " : " + zeroPad(seconds2, 2);
-		document.getElementById("dots").innerHTML = "&raquo; " + Math.floor(minutes / MINUTES_FOR_DOT) + " dots";
+		document.getElementById("dots").innerHTML = "&raquo; " + Math.floor(minutes / MINUTES_FOR_DOT) + " dots/lines";
 
 		var beepSeconds = Math.round((dateNow - dateLastBeep)/1000);
 		var beepMinutes = Math.floor(beepSeconds / 60);
